@@ -11,6 +11,8 @@ import io.github.codeutilities.script.argument.ScriptArgument;
 import io.github.codeutilities.script.execution.ScriptActionContext;
 import io.github.codeutilities.script.execution.ScriptContext;
 import io.github.codeutilities.script.execution.ScriptTask;
+import io.github.codeutilities.script.values.ScriptValue;
+
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +22,7 @@ public class ScriptAction implements ScriptPart {
 
     private final ScriptActionType type;
     private final List<ScriptArgument> arguments;
+    public ScriptValue returnValue = null;
 
     public ScriptAction(ScriptActionType type, List<ScriptArgument> arguments) {
         this.type = type;
@@ -30,6 +33,14 @@ public class ScriptAction implements ScriptPart {
         type.run(new ScriptActionContext(
             context, arguments, event, inner, task, new HashMap<>(), script
         ));
+    }
+
+    public ScriptValue returningInvoke(Event event, ScriptContext context, Consumer<Runnable> inner, ScriptTask task, Script script){
+        ScriptActionContext ctx = new ScriptActionContext(
+                context, arguments, event, inner, task, new HashMap<>(), script, true, this
+        );
+        type.run(ctx);
+        return returnValue;
     }
 
     public ScriptActionType getType() {

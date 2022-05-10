@@ -12,6 +12,7 @@ import io.github.codeutilities.event.HudRenderEvent;
 import io.github.codeutilities.event.system.CancellableEvent;
 import io.github.codeutilities.script.action.ScriptActionArgument.ScriptActionArgumentType;
 import io.github.codeutilities.script.argument.ScriptArgument;
+import io.github.codeutilities.script.argument.ScriptVariableArgument;
 import io.github.codeutilities.script.execution.ScriptActionContext;
 import io.github.codeutilities.script.menu.ScriptMenu;
 import io.github.codeutilities.script.menu.ScriptMenuButton;
@@ -1383,17 +1384,19 @@ public enum ScriptActionType {
         .description("Generates a random number between two other numbers.")
         .icon(Items.HOPPER)
         .category(ScriptActionCategory.NUMBERS)
-        .arg("Result", ScriptActionArgumentType.VARIABLE)
+        //.arg("Result", ScriptActionArgumentType.VARIABLE)
         .arg("Min", ScriptActionArgumentType.NUMBER)
         .arg("Max", ScriptActionArgumentType.NUMBER)
+        .returns(ScriptActionArgumentType.NUMBER)
         .action(ctx -> {
             double min = ctx.value("Min").asNumber();
             double max = ctx.value("Max").asNumber();
             double result = Math.random() * (max - min) + min;
-            ctx.context().setVariable(
+            ctx.Return(new ScriptNumberValue(result));
+            /*ctx.context().setVariable(
                 ctx.variable("Result").name(),
                 new ScriptNumberValue(result)
-            );
+            );*/
         }));
 
     private Consumer<ScriptActionContext> action = (ctx) -> {
@@ -1404,6 +1407,15 @@ public enum ScriptActionType {
     private ScriptActionCategory category = ScriptActionCategory.MISC;
     private String description = "No description provided.";
     private final List<ScriptActionArgument> arguments = new ArrayList<>();
+    private ScriptActionArgumentType returnType = null;
+
+    public boolean doesReturn(){
+        return returnType != null;
+    }
+
+    public ScriptActionArgumentType getReturnType(){
+        return returnType;
+    }
 
     ScriptActionType(Consumer<ScriptActionType> builder) {
         builder.accept(this);
@@ -1476,6 +1488,16 @@ public enum ScriptActionType {
         return this;
     }
 
+    private ScriptActionType returns(ScriptActionArgumentType t){
+        returnType = t;
+        return this;
+    }
+
+    private ScriptActionType returns(){
+        returnType = ScriptActionArgumentType.ANY;
+        return this;
+    }
+
     public ScriptActionType arg(String name, ScriptActionArgumentType type, Consumer<ScriptActionArgument> builder) {
         ScriptActionArgument arg = new ScriptActionArgument(name, type);
         builder.accept(arg);
@@ -1491,7 +1513,19 @@ public enum ScriptActionType {
     public void run(ScriptActionContext ctx) {
         List<List<ScriptActionArgument>> possibilities = new ArrayList<>();
 
-        generatePossibilities(possibilities, new ArrayList<>(), arguments, 0);
+        if (doesReturn() && !ctx.isArg()) {
+            List<ScriptActionArgument> runtimeArguments = new ArrayList<>();
+            if (!ctx.isArg()) {
+                ScriptActionArgument arg = new ScriptActionArgument("Result", ScriptActionArgumentType.VARIABLE);
+                runtimeArguments.add(arg);
+            }
+            for (ScriptActionArgument arg : arguments) {
+                runtimeArguments.add(arg);
+            }
+            generatePossibilities(possibilities, new ArrayList<>(), runtimeArguments, 0);
+        } else {
+            generatePossibilities(possibilities, new ArrayList<>(), arguments, 0);
+        }
 
         search:
         for (List<ScriptActionArgument> possibility : possibilities) {

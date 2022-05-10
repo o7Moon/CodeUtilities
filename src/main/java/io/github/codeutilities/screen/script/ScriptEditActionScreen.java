@@ -8,11 +8,8 @@ import io.github.codeutilities.screen.widget.CText;
 import io.github.codeutilities.screen.widget.CWidget;
 import io.github.codeutilities.script.Script;
 import io.github.codeutilities.script.action.ScriptAction;
-import io.github.codeutilities.script.argument.ScriptArgument;
-import io.github.codeutilities.script.argument.ScriptClientValueArgument;
-import io.github.codeutilities.script.argument.ScriptNumberArgument;
-import io.github.codeutilities.script.argument.ScriptTextArgument;
-import io.github.codeutilities.script.argument.ScriptVariableArgument;
+import io.github.codeutilities.script.argument.*;
+
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +51,9 @@ public class ScriptEditActionScreen extends CScreen {
             } else if (arg instanceof ScriptClientValueArgument cva) {
                 icon = new ItemStack(Items.NAME_TAG);
                 text = cva.getName();
+            } else if (arg instanceof ScriptActionReturnArgument retarg) {
+                icon = retarg.action().getType().getIcon();
+                text = retarg.action().getType().getName();
             } else {
                 throw new IllegalArgumentException("Invalid argument type");
             }
@@ -96,6 +96,8 @@ public class ScriptEditActionScreen extends CScreen {
                                 contextMenu.add(insertAfter);
                                 contextMenu.add(delete);
                             });
+                        } else if (arg instanceof ScriptActionReturnArgument retarg){
+                            CodeUtilities.MC.setScreen(new ScriptEditActionScreen(retarg.action(),script));
                         }
                         return true;
                     }

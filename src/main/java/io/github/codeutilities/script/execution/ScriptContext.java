@@ -1,5 +1,6 @@
 package io.github.codeutilities.script.execution;
 
+import io.github.codeutilities.script.Script;
 import io.github.codeutilities.script.values.ScriptUnknownValue;
 import io.github.codeutilities.script.values.ScriptValue;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 public class ScriptContext {
 
     private final HashMap<String,ScriptValue> variables = new HashMap<>();
+    public Script script = null;
 
     public ScriptValue getVariable(String name) {
         if (!variables.containsKey(name)) {

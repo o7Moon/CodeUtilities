@@ -6,6 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import io.github.codeutilities.event.system.Event;
+import io.github.codeutilities.script.ScriptPart;
+import io.github.codeutilities.script.action.ScriptAction;
 import io.github.codeutilities.script.action.ScriptActionArgument.ScriptActionArgumentType;
 import io.github.codeutilities.script.execution.ScriptContext;
 import io.github.codeutilities.script.values.ScriptValue;
@@ -28,6 +30,7 @@ public interface ScriptArgument {
                 case "NUMBER" -> new ScriptNumberArgument(object.get("value").getAsDouble());
                 case "VARIABLE" -> new ScriptVariableArgument(object.get("value").getAsString());
                 case "CLIENT_VALUE" -> ScriptClientValueArgument.valueOf(object.get("value").getAsString());
+                case "ACTION" -> new ScriptActionReturnArgument(context.deserialize(object.get("value"), ScriptPart.class));
                 default -> throw new JsonParseException("Unknown argument type: " + type);
             };
         }

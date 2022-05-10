@@ -7,6 +7,10 @@ public abstract class ScriptValue {
 
     abstract String typeName();
 
+    public String GetTypeName(){
+        return typeName();
+    }
+
     public String asText() {
         throw new UnsupportedOperationException("Cannot convert " + typeName() + " to text");
     }

@@ -14,11 +14,7 @@ import io.github.codeutilities.event.system.Event;
 import io.github.codeutilities.event.system.EventManager;
 import io.github.codeutilities.loader.Loadable;
 import io.github.codeutilities.script.action.ScriptAction;
-import io.github.codeutilities.script.argument.ScriptArgument;
-import io.github.codeutilities.script.argument.ScriptClientValueArgument;
-import io.github.codeutilities.script.argument.ScriptNumberArgument;
-import io.github.codeutilities.script.argument.ScriptTextArgument;
-import io.github.codeutilities.script.argument.ScriptVariableArgument;
+import io.github.codeutilities.script.argument.*;
 import io.github.codeutilities.script.event.ScriptEvent;
 import io.github.codeutilities.script.event.ScriptStartUpEvent;
 import io.github.codeutilities.util.FileUtil;
@@ -50,6 +46,7 @@ public class ScriptManager implements Loadable {
         .registerTypeAdapter(ScriptNumberArgument.class, new ScriptNumberArgument.Serializer())
         .registerTypeAdapter(ScriptVariableArgument.class, new ScriptVariableArgument.Serializer())
         .registerTypeAdapter(ScriptClientValueArgument.class, new ScriptClientValueArgument.Serializer())
+        .registerTypeAdapter(ScriptActionReturnArgument.class,new ScriptActionReturnArgument.Serializer())
         .registerTypeAdapter(ScriptAction.class, new ScriptAction.Serializer())
         .registerTypeAdapter(ScriptEvent.class, new ScriptEvent.Serializer())
         .create();

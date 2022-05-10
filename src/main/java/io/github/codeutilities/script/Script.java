@@ -39,6 +39,7 @@ public class Script {
         this.parts = parts;
         this.disabled = disabled;
         LOGGER = LogManager.getLogger("Script." + name);
+        context.script = this;
     }
 
     public File getFile() {
