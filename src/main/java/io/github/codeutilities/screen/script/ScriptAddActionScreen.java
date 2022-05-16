@@ -46,7 +46,7 @@ public class ScriptAddActionScreen extends CScreen {
         for (ScriptActionType type : ScriptActionType.values()) {
             if (type.getCategory() != category) continue;
 
-            CItem item = new CItem(x, y, type.getIcon());
+            CItem item = new CItem(x, y, type.getIcon(true));
             item.setClickListener((btn) -> {
                 ScriptAction action = new ScriptAction(type, new ArrayList<>());
                 script.getParts().add(insertIndex, action);
